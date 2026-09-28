@@ -38,7 +38,7 @@ export function TablesList({ tables, onJoinTable, onBack, banners }: TablesListP
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#8B4513] via-[#A0522D] to-[#654321] p-4">
       <SideBanners banners={banners} />
-      <div className="mx-auto max-w-5xl pt-4">
+      <div className="mx-auto max-w-5xl pt-4 lg:max-w-[min(64rem,calc(100vw_-_22rem))] xl:max-w-[min(64rem,calc(100vw_-_26rem))]">
         <button
           onClick={onBack}
           className="mb-4 rounded border-2 border-[#D4AF37] bg-[#654321] px-4 py-1.5 text-sm text-[#F5DEB3] transition-colors hover:bg-[#7d5a2e] sm:text-base"
