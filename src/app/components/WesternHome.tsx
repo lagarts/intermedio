@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Menu, X, Download, Share2, Smartphone } from "lucide-react";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 import { IntIcon } from "./IntIcon";
 import { SideBanners } from "./SideBanners";
 import type { BannersConfig } from "../types/banners";
@@ -16,36 +16,6 @@ interface WesternHomeProps {
 
 export function WesternHome({ userName, userBalance, isAdmin, onNavigate, onLogout, banners }: WesternHomeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallHelp, setShowInstallHelp] = useState(false);
-  const [isStandalone, setIsStandalone] = useState(false);
-
-  useEffect(() => {
-    setIsStandalone(
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as any).standalone === true
-    );
-
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-    window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
-
-  const handleInstall = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      setDeferredPrompt(null);
-      return;
-    }
-    setShowInstallHelp(true);
-  };
-
-  const isIOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const isAndroid = typeof navigator !== "undefined" && /Android/.test(navigator.userAgent);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#8B4513] via-[#A0522D] to-[#654321] p-4 relative overflow-hidden flex flex-col">
@@ -118,15 +88,6 @@ export function WesternHome({ userName, userBalance, isAdmin, onNavigate, onLogo
           <WesternButton onClick={() => onNavigate("tables")}>LOBBY</WesternButton>
           <WesternButton onClick={() => onNavigate("createTable")}>CREAR MESA</WesternButton>
           <WesternButton onClick={() => onNavigate("campaign")}>CAMPAÑA</WesternButton>
-          {!isStandalone && (
-            <button
-              onClick={handleInstall}
-              className="w-full py-2.5 sm:py-3 bg-gradient-to-b from-[#2d9a68] to-[#1f6b47] text-white font-bold text-base border-4 border-[#654321] rounded-lg shadow-[0_8px_20px_rgba(0,0,0,0.6)] hover:from-[#38b577] hover:to-[#2d9a68] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-            >
-              <Download className="w-5 h-5" />
-              Instalar App
-            </button>
-          )}
         </div>
 
         {banners.mobile?.img && banners.mobile.href && (
@@ -144,52 +105,6 @@ export function WesternHome({ userName, userBalance, isAdmin, onNavigate, onLogo
           </a>
         )}
 
-        {showInstallHelp && (
-          <div className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4" onClick={() => setShowInstallHelp(false)}>
-            <div className="bg-[#3E2723] border-4 border-[#D4AF37] rounded-xl p-6 max-w-sm w-full shadow-2xl" onClick={e => e.stopPropagation()}>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-[#F5DEB3] font-bold text-lg" style={{ fontFamily: "serif" }}>Instalar Intermedio</h3>
-                <button onClick={() => setShowInstallHelp(false)} className="text-[#D2B48C] hover:text-white">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="space-y-3 text-[#F5DEB3] text-sm">
-                {isIOS ? (
-                  <>
-                    <p className="font-semibold text-[#D4AF37]">iPhone / iPad:</p>
-                    <ol className="list-decimal list-inside space-y-1.5 pl-1">
-                      <li>Abri la app en <strong>Safari</strong></li>
-                      <li>Tocá el boton de <strong>Compartir</strong> <span className="inline-block px-1.5 py-0.5 bg-[#654321] rounded text-xs">⬆</span></li>
-                      <li>Seleccioná <strong>"Agregar a pantalla de inicio"</strong></li>
-                    </ol>
-                  </>
-                ) : isAndroid ? (
-                  <>
-                    <p className="font-semibold text-[#D4AF37]">Android:</p>
-                    <ol className="list-decimal list-inside space-y-1.5 pl-1">
-                      <li>Tocá los <strong>tres puntos ⋮</strong> del navegador</li>
-                      <li>Seleccioná <strong>"Instalar app"</strong> o <strong>"Agregar a pantalla de inicio"</strong></li>
-                    </ol>
-                  </>
-                ) : (
-                  <>
-                    <p className="font-semibold text-[#D4AF37]">PC / Escritorio:</p>
-                    <ol className="list-decimal list-inside space-y-1.5 pl-1">
-                      <li>Busca el icono <strong>+ instalar</strong> en la barra de direcciones (lado derecho)</li>
-                      <li>O tocá los tres puntos ⋮ → <strong>"Instalar Intermedio"</strong></li>
-                    </ol>
-                  </>
-                )}
-              </div>
-              <button
-                onClick={() => setShowInstallHelp(false)}
-                className="mt-5 w-full py-2 bg-[#654321] text-[#F5DEB3] font-semibold rounded border-2 border-[#D4AF37] hover:bg-[#7d5a2e] transition-colors"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       <footer
